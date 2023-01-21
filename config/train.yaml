@@ -16,14 +16,11 @@ defaults:
 
   - experiment: null
 
-
 vocab_size: null
 
 max_message_length: null
 
 embedded_size: 512
-
-request_types: null
 
 task_name: "train"
 
