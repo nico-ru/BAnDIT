@@ -1,0 +1,30 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=example
+
+dataset_name: dotlist
+service_compound:
+  - order
+
+defaults:
+  - override /datamodule: message_event.yaml
+  - override /model: message_event_encoder.yaml
+  - override /trainer: default.yaml
+  - override /logger: tensorboard.yaml
+
+trainer:
+  min_epochs: 1
+  max_epochs: 5
+
+model:
+    vector_size: ${vocab_size}
+    hidden_size: ${embedded_size}
+    max_length: ${max_message_length}
+    START:
+        data: ${start:${vocab_size}}
+    END:
+        data: ${end:${vocab_size}}
+
+datamodule:
+  batch_size: 1

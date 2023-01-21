@@ -1,0 +1,36 @@
+# @package _global_
+
+dataset_name: ???
+service_compound: ???
+
+defaults:
+  - _self_
+  - datamodule: message_event.yaml
+  - dataset: default.yaml
+  - model: message_event_encoder.yaml
+  - callbacks: default.yaml
+  - logger: null # set logger here or use command line (e.g. `python train.py logger=tensorboard`)
+  - trainer: default.yaml
+  - paths: default.yaml
+  - hydra: default.yaml
+
+  - experiment: null
+
+
+vocab_size: null
+
+max_message_length: null
+
+embedded_size: 512
+
+request_types: null
+
+task_name: "train"
+
+tags: ["dev"]
+
+train: True
+
+test: True
+
+chkp_path: null

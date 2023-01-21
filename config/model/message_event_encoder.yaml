@@ -1,0 +1,15 @@
+_target_: src.models.message_event_encoder.MessageEventEncoderLitModule
+
+vector_size: null
+hidden_size: null
+max_length: null
+
+START:
+    _target_: torch.LongTensor
+
+END:
+    _target_: torch.LongTensor
+
+optimizer: 
+    _target_: torch.optim.Adam
+    _partial_: true

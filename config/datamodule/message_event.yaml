@@ -1,0 +1,9 @@
+_target_: src.datamodules.message_event_datamodule.MessageEventModule
+
+dataset: ${dataset}
+
+train_val_test_split: [.75, .05, .20]
+batch_size: 1
+num_workers: 8
+pin_memory: False
+
