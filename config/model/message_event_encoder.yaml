@@ -1,14 +1,16 @@
 _target_: src.models.message_event_encoder.MessageEventEncoderLitModule
 
-vector_size: null
-hidden_size: null
-max_length: null
+vector_size: ${vocab_size}
+hidden_size: ${embedded_size}
+max_length: ${max_message_length}
 
 START:
     _target_: torch.LongTensor
+    data: ${start:${vocab_size}}
 
 END:
     _target_: torch.LongTensor
+    data: ${end:${vocab_size}}
 
 optimizer: 
     _target_: torch.optim.Adam
