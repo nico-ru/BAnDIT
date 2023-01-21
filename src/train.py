@@ -69,7 +69,11 @@ def main(cfg: DictConfig):
     test_metrics = trainer.callback_metrics
 
     metric_dict = {**train_metrics, **test_metrics}
-    logger.info(metric_dict)
+    for name, value in metric_dict.items():
+        logger.info(f"{name}: {value.item():0.4f}")
+
+    ckpt_path = trainer.checkpoint_callback.best_model_path  # type: ignore
+    logger.info(f"Best ckpt path: {ckpt_path}")
 
 
 if __name__ == "__main__":
