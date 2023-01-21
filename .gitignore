@@ -166,7 +166,7 @@ cython_debug/
 .vim/
 
 # data and logs
-datasets/*
+data/*
 logs/*
 data/*
 lightning_logs
