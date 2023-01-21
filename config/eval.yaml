@@ -1,0 +1,28 @@
+# @package _global_
+
+dataset_name: ???
+service_compound: ???
+
+defaults:
+  - _self_
+  - datamodule: message_event.yaml
+  - dataset: default.yaml
+  - model: message_event_encoder.yaml
+  - logger: null
+  - trainer: default.yaml
+  - paths: default.yaml
+  - hydra: default.yaml
+
+vocab_size: null
+
+max_message_length: null
+
+embedded_size: 512
+
+task_name: "eval"
+
+tags: ["dev"]
+
+# passing checkpoint path is necessary for evaluation
+ckpt_path: ???
+
