@@ -11,11 +11,11 @@ defaults:
   - override /datamodule: message_event.yaml
   - override /model: message_event_encoder.yaml
   - override /trainer: default.yaml
-  - override /logger: tensorboard.yaml
+  - override /logger: many_loggers.yaml
 
 trainer:
-  min_epochs: 1
   max_epochs: 5
+  log_every_n_steps: 5
 
 datamodule:
   batch_size: 1
