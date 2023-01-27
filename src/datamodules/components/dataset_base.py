@@ -89,9 +89,7 @@ class DatasetBase(Dataset):
         return len(self.annotations)
 
     def _apply_date_range(self):
-        self.annotations.loc["TIMESTAMP"] = pd.to_datetime(
-            self.annotations["TIMESTAMP"]
-        )
+        self.annotations["TIMESTAMP"] = pd.to_datetime(self.annotations["TIMESTAMP"])
         if self.start_date:
             if isinstance(self.start_date, str):
                 self.start_date = datetime.datetime.fromisoformat(self.start_date)
