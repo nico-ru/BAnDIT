@@ -184,8 +184,8 @@ class MessageEventEncoderLitModule(pl.LightningModule):
 
     def predict_step(self, batch: Any, batch_idx: int, dataloader_idx: int = 0) -> Any:
         input_tensor = batch
-        decoder_outputs, *_ = self.forward(input_tensor)
-        return (decoder_outputs, input_tensor.squeeze().tolist())
+        decoder_outputs, loss, _ = self.forward(input_tensor)
+        return (decoder_outputs, input_tensor.squeeze().tolist(), loss)
 
     def configure_optimizers(self):
         return self.optimizer(self.parameters())  # type: ignore

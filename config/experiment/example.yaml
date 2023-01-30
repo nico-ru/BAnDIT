@@ -17,5 +17,8 @@ trainer:
   max_epochs: 2
   log_every_n_steps: 5
 
+dataset:
+  padding: END
+
 datamodule:
   batch_size: 1

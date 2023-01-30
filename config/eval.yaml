@@ -8,10 +8,13 @@ defaults:
   - datamodule: message_event.yaml
   - dataset: default.yaml
   - model: message_event_encoder.yaml
+  - callbacks: default.yaml
   - logger: null
   - trainer: default.yaml
   - paths: default.yaml
   - hydra: default.yaml
+
+  - experiment: null
 
 vocab_size: null
 

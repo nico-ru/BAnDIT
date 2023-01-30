@@ -3,6 +3,8 @@ from typing import List
 import hydra
 import logging
 import pyrootutils
+import json
+from rich.progress import track
 from omegaconf import DictConfig, OmegaConf
 from pytorch_lightning import Callback
 from pytorch_lightning.core.datamodule import LightningDataModule
@@ -78,10 +80,25 @@ def main(cfg: DictConfig):
 
     assert predictions is not None
     anomaly_count = 0
-    for i, (reconstruct, input, loss) in enumerate(predictions):
-        # LOG RECONSTUCTION LOSSES
-        # SAFE RETRANSFORMED SAMPLES VS. RECONSTUCTIONS
-        pass
+    results = []
+    for i, (reconstruct, input, loss) in track(
+        enumerate(predictions),
+        description="Writing predictions",
+        total=len(predictions),
+    ):
+        results.append([i, dataset.annotations["MESSAGE"].iloc[i], loss.item()])
+
+        target = transformer.retransform_sample(input)
+        prediction = transformer.retransform_sample(reconstruct)
+        pair = dict(target=target, prediction=prediction)
+
+        predictions_dir = os.path.join(cfg.paths.output_dir, "predictions")
+        os.makedirs(predictions_dir, exist_ok=True)
+        json.dump(pair, open(os.path.join(predictions_dir, str(i)), "w"))
+
+    logger.info("Writing losses to csv")
+    results_df = pandas.DataFrame(results, columns=["DS_INDEX", "MESSAGE", "LOSS"])
+    results_df.to_csv(os.path.join(cfg.paths.output_dir, "results.csv"), index=False)
 
     logger.info(f"found {anomaly_count} anomalies")
 
