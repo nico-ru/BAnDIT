@@ -51,5 +51,5 @@ python src/train.py experiment=<experiment>.yaml
 You can override any parameter from command line like this
 
 ```bash
-python src/train.py trainer.max_epochs=20 
+python src/train.py experiment=<experiment>.yaml trainer.max_epochs=20 
 ```
