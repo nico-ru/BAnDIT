@@ -19,6 +19,7 @@ class MessageEventEncoderLitModule(pl.LightningModule):
         START,
         END,
         optimizer: optim.Optimizer,
+        tf_rate: float = 0.8,
     ):
         super().__init__()
         self.input_size = self.output_size = vector_size
@@ -26,6 +27,7 @@ class MessageEventEncoderLitModule(pl.LightningModule):
         self.max_length = max_length
         self.START = START
         self.END = END
+        self.tf_rate = tf_rate
 
         self.optimizer = optimizer
         self.encoder = EncoderRNN(self.input_size, self.hidden_size)
@@ -145,7 +147,7 @@ class MessageEventEncoderLitModule(pl.LightningModule):
         decoder_input = self.START
         decoder_hidden = self.decoder.initHidden()
 
-        teacher_forcing = random.random() < 0.5
+        teacher_forcing = random.random() < self.tf_rate
         count = 0
         if teacher_forcing:
             for di in range(input_length):
