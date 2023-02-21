@@ -79,15 +79,13 @@ def main(cfg: DictConfig):
     transformer: SampleTransformer = dataset.transformer
 
     assert predictions is not None
-    anomaly_count = 0
+    diff_count = 0
     results = []
     for i, (reconstruct, input, loss) in track(
         enumerate(predictions),
         description="Writing predictions",
         total=len(predictions),
     ):
-        results.append([i, dataset.annotations["MESSAGE"].iloc[i], loss.item()])
-
         target = transformer.retransform_sample(input)
         prediction = transformer.retransform_sample(reconstruct)
         pair = dict(target=target, prediction=prediction)
@@ -96,11 +94,21 @@ def main(cfg: DictConfig):
         os.makedirs(predictions_dir, exist_ok=True)
         json.dump(pair, open(os.path.join(predictions_dir, str(i)), "w"))
 
+        is_diff = target != prediction
+        results.append(
+            [i, dataset.annotations["MESSAGE"].iloc[i], loss.item(), is_diff]
+        )
+
+        if is_diff:
+            diff_count += 1
+
     logger.info("Writing losses to csv")
-    results_df = pandas.DataFrame(results, columns=["DS_INDEX", "MESSAGE", "LOSS"])
+    results_df = pandas.DataFrame(
+        results, columns=["DS_INDEX", "MESSAGE", "LOSS", "IS_DIFFERENT"]
+    )
     results_df.to_csv(os.path.join(cfg.paths.output_dir, "results.csv"), index=False)
 
-    logger.info(f"found {anomaly_count} anomalies")
+    logger.info(f"found {diff_count} deviations")
 
 
 if __name__ == "__main__":
