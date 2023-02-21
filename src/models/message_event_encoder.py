@@ -20,6 +20,7 @@ class MessageEventEncoderLitModule(pl.LightningModule):
         END,
         optimizer: optim.Optimizer,
         tf_rate: float = 0.8,
+        nucleus_p: float = 0.9,
     ):
         super().__init__()
         self.input_size = self.output_size = vector_size
@@ -28,6 +29,7 @@ class MessageEventEncoderLitModule(pl.LightningModule):
         self.START = START
         self.END = END
         self.tf_rate = tf_rate
+        self.nucleus_p = nucleus_p
 
         self.optimizer = optimizer
         self.encoder = EncoderRNN(self.input_size, self.hidden_size)
@@ -83,7 +85,7 @@ class MessageEventEncoderLitModule(pl.LightningModule):
             loss = loss / count
         return torch.tensor(decoder_outputs), loss
 
-    def forward(self, input) -> Tuple[List, torch.Tensor, torch.Tensor]:
+    def forward(self, input) -> Tuple[List, torch.Tensor, torch.Tensor, List]:
         assert input.size(0) == 1, "batch has to be of size 1"
         input_tensor = input[0]
 
@@ -102,29 +104,45 @@ class MessageEventEncoderLitModule(pl.LightningModule):
         decoder_input = self.START
         decoder_hidden = self.decoder.initHidden()
         decoder_outputs = list()
+        probabilities = list()
 
         count = 0
         for di in range(self.max_length):
             decoder_output, decoder_hidden, _ = self.decoder(
                 decoder_input, decoder_hidden, encoder_outputs
             )
-            _, top_i = decoder_output.topk(1)
-            decoder_input = top_i.squeeze().detach()
+            dist = torch.exp(decoder_output).view(-1)
+            dist_sorted, dist_i = dist.sort(descending=True)
+
+            nucleus = torch.cumsum(dist_sorted, dim=0) < self.nucleus_p
+            nucleus = torch.cat(
+                [nucleus.new_ones(nucleus.shape[:-1] + (1,)), nucleus[..., :-1]], dim=-1
+            )
+            candidates = dist_i[nucleus]
+            probabilities.append((dist_sorted[nucleus], candidates))
 
             target = (
                 input_tensor[di]
                 if di < input_tensor.size(0)
                 else torch.tensor([self.END])
             )
+            decoder_input = target
+
             loss += self.metric(decoder_output, target)
-            decoder_outputs.append(top_i.item())
+
+            if target in candidates:
+                step_output = target.item()
+            else:
+                step_output = candidates[0].item()
+
+            decoder_outputs.append(step_output)
             count += 1
-            if top_i.item() == self.END:
+            if step_output == self.END:
                 break
 
         assert count != 0, "count can not be 0"
         loss = loss / count
-        return decoder_outputs, loss, encoder_outputs
+        return decoder_outputs, loss, encoder_outputs, probabilities
 
     def training_step(self, batch, batch_idx) -> STEP_OUTPUT:
         input_tensor = batch
@@ -177,16 +195,16 @@ class MessageEventEncoderLitModule(pl.LightningModule):
 
     def test_step(self, batch, batch_idx) -> None:
         input_tensor = batch
-        _, loss, _ = self.forward(input_tensor)
+        _, loss, *_ = self.forward(input_tensor)
         self.log("test_loss", loss)
 
     def validation_step(self, batch, batch_idx) -> Optional[STEP_OUTPUT]:
-        _, loss, _ = self.forward(batch)
+        _, loss, *_ = self.forward(batch)
         self.log("val_loss", loss)
 
     def predict_step(self, batch: Any, batch_idx: int, dataloader_idx: int = 0) -> Any:
         input_tensor = batch
-        decoder_outputs, loss, _ = self.forward(input_tensor)
+        decoder_outputs, loss, *_ = self.forward(input_tensor)
         return (decoder_outputs, input_tensor.squeeze().tolist(), loss)
 
     def configure_optimizers(self):

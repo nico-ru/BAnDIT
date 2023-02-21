@@ -18,3 +18,4 @@ optimizer:
     lr: 0.0001
 
 tf_rate: 0.8
+nucleus_p: 0.9
