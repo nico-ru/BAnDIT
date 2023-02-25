@@ -88,6 +88,8 @@ def main(cfg: DictConfig):
     ):
         target = transformer.retransform_sample(input)
         prediction = transformer.retransform_sample(reconstruct)
+        # target = input
+        # prediction = reconstruct
         pair = dict(target=target, prediction=prediction)
 
         predictions_dir = os.path.join(cfg.paths.output_dir, "predictions")
@@ -96,7 +98,13 @@ def main(cfg: DictConfig):
 
         is_diff = target != prediction
         results.append(
-            [i, dataset.annotations["MESSAGE"].iloc[i], loss.item(), is_diff]
+            [
+                i,
+                dataset.annotations["MESSAGE"].iloc[i],
+                loss.item(),
+                is_diff,
+                dataset.annotations["CODE"].iloc[i],
+            ]
         )
 
         if is_diff:
@@ -104,7 +112,8 @@ def main(cfg: DictConfig):
 
     logger.info("Writing losses to csv")
     results_df = pandas.DataFrame(
-        results, columns=["DS_INDEX", "MESSAGE", "LOSS", "IS_DIFFERENT"]
+        results,
+        columns=["DS_INDEX", "MESSAGE", "LOSS", "IS_DIFFERENT", "TRUE_CODE"],
     )
     results_df.to_csv(os.path.join(cfg.paths.output_dir, "results.csv"), index=False)
 

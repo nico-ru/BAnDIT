@@ -11,17 +11,6 @@ service_compound:
   - billing
 
 defaults:
-  - override /datamodule: message_event.yaml
+  - override /dataset: embedded_sequence.yaml
   - override /model: message_event_encoder.yaml
-  - override /trainer: default.yaml
-  - override /logger: many_loggers.yaml
 
-trainer:
-  max_epochs: 2
-  log_every_n_steps: 5
-
-dataset:
-  padding: END
-
-datamodule:
-  batch_size: 1

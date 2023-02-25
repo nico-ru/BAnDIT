@@ -1,0 +1,8 @@
+_target_: src.datamodules.components.embedded_sequence_dataset.EmbeddedSequenceDataset
+
+annotations: ${paths.data_dir}/${dataset_name}/annotations.csv
+files_dir: ${paths.data_dir}/${dataset_name}
+services: ${service_compound}
+transform:
+    _target_: src.datamodules.components.helpers.requestToEncTensor
+    _partial_: true

@@ -1,0 +1,6 @@
+_target_: src.datamodules.components.sequence_dataset.SequenceDataset
+
+annotations: ${paths.data_dir}/${dataset_name}/annotations.csv
+events: ${paths.data_dir}/${dataset_name}/events.json
+services: ${service_compound}
+concept_name: ACTIVITY

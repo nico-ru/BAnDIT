@@ -1,8 +1,4 @@
 # @package _global_
-
-# to execute this experiment run:
-# python train.py experiment=example
-
 dataset_name: dotlist_induced3
 service_compound:
   - order
@@ -11,17 +7,24 @@ service_compound:
   - billing
 
 defaults:
+  - override /dataset: embedded_sequence.yaml 
   - override /datamodule: message_event.yaml
-  - override /model: message_event_encoder.yaml
+  - override /model: sequence_rnn.yaml
   - override /trainer: default.yaml
   - override /logger: many_loggers.yaml
 
+model:
+    embedding_size: 15616
+    embedding_dimension: 61
+    max_length: 7
+
 trainer:
-  max_epochs: 2
+  max_epochs: 20
   log_every_n_steps: 5
 
 dataset:
-  padding: END
+    load_tensors: true
 
 datamodule:
   batch_size: 1
+
