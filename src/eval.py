@@ -75,8 +75,11 @@ def main(cfg: DictConfig):
     logger.info(f"Instantiating dataset <{cfg.datamodule._target_}>")
     dataset: DatasetBase = hydra.utils.instantiate(cfg.dataset)
 
-    assert dataset.transformer is not None
-    transformer: SampleTransformer = dataset.transformer
+    use_transformer = False
+    if hasattr(dataset, "transformer"):
+        assert dataset.transformer is not None
+        transformer: SampleTransformer = dataset.transformer
+        use_transformer = True
 
     assert predictions is not None
     diff_count = 0
@@ -86,10 +89,13 @@ def main(cfg: DictConfig):
         description="Writing predictions",
         total=len(predictions),
     ):
-        target = transformer.retransform_sample(input)
-        prediction = transformer.retransform_sample(reconstruct)
-        # target = input
-        # prediction = reconstruct
+        if use_transformer:
+            target = transformer.retransform_sample(input)  # type: ignore
+            prediction = transformer.retransform_sample(reconstruct)  # type: ignore
+        else:
+            target = input
+            prediction = reconstruct
+
         pair = dict(target=target, prediction=prediction)
 
         predictions_dir = os.path.join(cfg.paths.output_dir, "predictions")
