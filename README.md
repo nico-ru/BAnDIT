@@ -1,6 +1,6 @@
 <div align="center">
 
-# Profile Based Anomaly Detection in Service Oriented Business Processes
+# Anomaly Detection in Interaction of Distributed Business Processes
 
 [![python](https://img.shields.io/badge/-Python_3.8_%7C_3.9_%7C_3.10-blue?logo=python&logoColor=white)](https://github.com/pre-commit/pre-commit)
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-ee4c2c?logo=pytorch&logoColor=white"></a>
@@ -11,14 +11,11 @@
 </div>
 
 ## Description
-
-Repository to supporting CoopIS submission.
-
 <div align="center">
 
 ### Abstract
 <br>
-Business process anomaly detection enables the prevention of misuse and failures. Existing approaches focus on detecting anomalies in control, temporal, and resource behavior of individual instances, neglecting the data flow, collaborations, and choreographies involving multiple instances. Consequently, anomaly detection capabilities are limited, as culprits can strategically split their actions across multiple instances to evade detection. This study presents a novel neural network-based approach to detect anomalies in distributed business processes. Unlike existing methods, our solution considers message data exchanged during process interactions. Allowing the generation of detection profiles incorporating the relationship between multiple instances, related services, and exchanged data to detect point and contextual anomalies during process runtime, thus reducing the likelihood of anomalies going unnoticed. To validate the proposed solution, it is demonstrated on a publicly available prototype implementation of a distributed system as well as real-life and artificial execution logs with injected artifical anomalies.
+Business process anomaly detection enables the prevention of misuse and failures. Existing approaches focus on detecting anomalies in control, temporal, and resource behavior of individual instances, neglecting the data flow, collaborations, and choreographies involving multiple instances. Consequently, anomaly detection capabilities are limited, as culprits can strategically split their actions across multiple instances to evade detection. This study presents a novel neural network-based approach to detect anomalies in distributed business processes. Unlike existing methods, our solution considers message data exchanged during process interactions. Allowing the generation of detection profiles incorporating the relationship between multiple instances, related services, and exchanged data to detect point and contextual anomalies during process runtime, thus reducing the likelihood of anomalies going unnoticed. To validate the proposed solution, it is demonstrated on a publicly available prototype implementation of a distributed system as well as real-life and artificial execution logs with injected artificial anomalies.
 </div>
 
 ## How to run
