@@ -1,4 +1,5 @@
 import os
+import shutil
 import json
 import pm4py
 import dotenv
@@ -56,7 +57,17 @@ def main(services, name):
         name = f"{compound_name}_{now}"
     dir = os.path.join(RESULT_DIR, name)
     doc_dir = os.path.join(dir, "documents")
-    os.makedirs(doc_dir, exist_ok=True)
+
+    if os.path.exists(dir):
+        res = input(
+            "result directory already exists! Do you want to overwrite? ([y]/n)"
+        )
+        if res.lower() == "y" or res.lower() == "":
+            shutil.rmtree(dir)
+        else:
+            return 1
+
+    os.makedirs(doc_dir)
 
     vocab = dict()
     size = 0
