@@ -1,7 +1,6 @@
 import os
 import datetime
 import argparse
-from os.path import isfile
 from typing import Dict
 import dotenv
 import requests

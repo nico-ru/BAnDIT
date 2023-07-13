@@ -3,7 +3,6 @@ import json
 import pm4py
 import dotenv
 import pandas
-import shutil
 import datetime
 import argparse
 
@@ -16,7 +15,7 @@ assert LOG_DIR, "specify log directory by setting LOG_DIR environment variable"
 assert RESULT_DIR, "specify result directory by setting RESULT_DIR environment variable"
 
 
-def main(services):
+def main(services, name):
     compound_name = None
 
     if services is None:
@@ -53,7 +52,9 @@ def main(services):
     log.reset_index(inplace=True, drop=True)
 
     now = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-    dir = os.path.join(RESULT_DIR, f"{compound_name}_{now}")
+    if name is None:
+        name = f"{compound_name}_{now}"
+    dir = os.path.join(RESULT_DIR, name)
     doc_dir = os.path.join(dir, "documents")
     os.makedirs(doc_dir, exist_ok=True)
 
@@ -82,6 +83,11 @@ def main(services):
 
         if len(content_combined.split(" ")) > size:
             size = len(content_combined.split(" "))
+
+    vocab["END"] = -1
+    vocab["EMPTY"] = -2
+    vocab["START"] = -3
+    vocab["UNK"] = -4
 
     location = os.path.join(dir, "annotations.csv")
     with open(f"{dir}/vocab.txt", "a") as f:
@@ -145,6 +151,12 @@ if __name__ == "__main__":
         nargs="*",
         default=None,
         help="services to include in the compound (default: all services are included)",
+    )
+    parser.add_argument(
+        "-n",
+        "--name",
+        default=None,
+        help="name of the exported data set folder (defualt: generated based on services and date)",
     )
     args = parser.parse_args()
 
