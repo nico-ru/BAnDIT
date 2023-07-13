@@ -29,7 +29,7 @@ def id() -> str:
     to simulate webshop with limited number of items
     """
     chars = list(ascii_lowercase[22:]) + [str(i) for i in range(1)]
-    return "".join([random.choice(chars) for _ in range(4)])
+    return "".join([random.choice(chars) for _ in range(3)])
 
 
 def get_size() -> str:
@@ -52,9 +52,9 @@ def get_payload():
     example:
         {
             "items": [
-                {"id": y1y0x, "size": "M"},
-                {"id": y10z0, "size": "L"},
-                {"id": z1011, "size": "S"},
+                {"id": y1y0, "size": "M"},
+                {"id": y10z, "size": "L"},
+                {"id": z101, "size": "S"},
             ]
             "location": "DE"
         }
