@@ -14,7 +14,7 @@ defaults:
   - override /logger: many_loggers.yaml
 
 model:
-    embedding_size: 15616
+    embedding_size: 15616 # embedding_dimension x embedded_size
     embedding_dimension: 61
     max_length: 7
 

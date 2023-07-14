@@ -1,8 +1,9 @@
 <div align="center">
 
-# Anomaly Detection in Interaction of Distributed Business Processes
 
-[![python](https://img.shields.io/badge/-Python_3.8_%7C_3.9_%7C_3.10-blue?logo=python&logoColor=white)](https://github.com/pre-commit/pre-commit)
+# BAnDIT: Business Process Anomaly Detection in Transactions
+
+[![python](https://img.shields.io/badge/-Python_3.10-blue?logo=python&logoColor=white)](https://www.python.org/downloads/release/python-3100/)
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-ee4c2c?logo=pytorch&logoColor=white"></a>
 <a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-792ee5?logo=pytorchlightning&logoColor=white"></a>
 <a href="https://hydra.cc/"><img alt="Config: Hydra" src="https://img.shields.io/badge/Config-Hydra-89b8cd"></a>
@@ -11,11 +12,12 @@
 </div>
 
 ## Description
+
 <div align="center">
 
 ### Abstract
 <br>
-Business process anomaly detection enables the prevention of misuse and failures. Existing approaches focus on detecting anomalies in control, temporal, and resource behavior of individual instances, neglecting the data flow, collaborations, and choreographies involving multiple instances. Consequently, anomaly detection capabilities are limited, as culprits can strategically split their actions across multiple instances to evade detection. This study presents a novel neural network-based approach to detect anomalies in distributed business processes. Unlike existing methods, our solution considers message data exchanged during process interactions. Allowing the generation of detection profiles incorporating the relationship between multiple instances, related services, and exchanged data to detect point and contextual anomalies during process runtime, thus reducing the likelihood of anomalies going unnoticed. To validate the proposed solution, it is demonstrated on a publicly available prototype implementation of a distributed system as well as real-life and artificial execution logs with injected artificial anomalies.
+Business process anomaly detection enables the prevention of misuse and failures. Existing approaches focus on detecting anomalies in control, temporal, and resource behavior of individual instances, neglecting the data flow, collaborations, and choreographies involving multiple instances. Consequently, anomaly detection capabilities are limited, as culprits can strategically split their actions across multiple instances to evade detection. This study presents a novel neural network-based approach to detect anomalies in distributed business processes. Unlike existing methods, our solution considers message data exchanged during process transactions. Allowing the generation of detection profiles incorporating the relationship between multiple instances, related services, and exchanged data to detect point and contextual anomalies during process runtime, thus reducing the likelihood of anomalies going unnoticed. To validate the proposed solution, it is demonstrated on a publicly available prototype implementation of a distributed system as well as real-life and artificial execution logs with injected artifical anomalies.
 </div>
 
 ## How to run
@@ -24,12 +26,12 @@ Business process anomaly detection enables the prevention of misuse and failures
 
 ```bash
 # clone project
-git clone https://github.com/nico-ru/profile-based-anomaly-detection
-cd profile-based-anomaly-detection
+git clone https://github.com/nico-ru/BAnDIT
+cd BAnDIT
 
 # [OPTIONAL] create conda environment
-conda create -n <myenv> python=3.10
-conda activate <myenv>
+conda create -n <env_name> python=3.10
+conda activate <env_name>
 
 # install pytorch according to instructions
 # https://pytorch.org/get-started/
@@ -37,7 +39,7 @@ conda activate <myenv>
 pip install -r requirements.txt
 ```
 
-Train model with default configuration
+Train model with default configuration (some parameters will be required)
 
 ```bash
 # train on CPU
@@ -49,13 +51,13 @@ python src/train.py trainer=gpu
 Train model with chosen experiment configuration from [config/experiment/](config/experiment/)
 
 ```bash
-python src/train.py experiment=<experiment>.yaml
+python src/train.py experiment=<experiment>
 ```
 
-You can override any parameter from command line like this
+You can override any configuration parameter from command line like this
 
 ```bash
-python src/train.py experiment=<experiment>.yaml trainer.max_epochs=20 
+python src/train.py experiment=<experiment> trainer.max_epochs=20 
 ```
 
 ### Run example experiment:
@@ -90,13 +92,12 @@ Purpose is to generate a log of the underlying workflow of the system. This log 
 ## Quickstart
 ### setup the project
 ```bash
-# clone project
-git clone https://github.com/nico-ru/so-process-simulation.git
-cd so-process-simulation
+# switch to simulation project
+cd simulation
 
 # [OPTIONAL] create conda environment
-conda create -n myenv python=3.10
-conda activate myenv
+conda create -n <env_name> python=3.10
+conda activate <env_name>
 
 # [OPTIONAL] install graphviz executables
 # https://graphviz.org/download/
@@ -110,7 +111,7 @@ pip install .
 
 # setup .env file according to env.example
 cp env.example .env
-sed -i "s|<base_dir>|$(pwd)|" .env   # note: if there is a | character in your path chage the delimiter
+sed -i "s|<base_dir>|$(pwd)|" .env   # note: if there is a | character in your path change the delimiter for the sed command
 
 # or edit with your preferred editor
 vim .env # --> edit path variable
@@ -120,6 +121,9 @@ vim .env # --> edit path variable
 ```bash
 # start the services
 /bin/bash scripts/start_services.sh
+
+# in case you ran the simulation make sure to clean the logs directories
+/bin/bash scripts/clear_logs.sh
 
 # start simulation
 python run_simulation.py --n_requests 100
@@ -151,8 +155,10 @@ python export_logs.py
 
 # export for only order and inventory services
 python merge_logs.py --services order inventory
-
-# results will be in result/
 ```
 
-
+By default, results will be copied to the `/data` directory of the main Project. This can be changed by altering the `RESULT_DIR` environment vaiable in the `/simulation/.env` file.<br>
+You can specify the name of the exported data set by passing it as an argument as follows:
+```
+python export_logs.py --name <dataset_name>
+```

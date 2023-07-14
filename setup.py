@@ -2,7 +2,7 @@ from setuptools import find_packages
 from setuptools import setup
 
 setup(
-    name="soadetect",
+    name="BAnDIT",
     version="0.0.1",
     description="Anomaly Detection: Project to spot anomalies in service oriented business processes",
     long_description="",
