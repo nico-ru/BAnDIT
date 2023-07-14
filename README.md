@@ -73,7 +73,7 @@ python src/train.py experiment=point
 ```bash
 python src/train.py experiment=context
 ```
-
+**Run evaluation**
 The training script will prompt yout with the checkpoint path of the best model weights for the training.<br>
 You can run the evaluation on the entire data set with passing this checkpoint path as follows:
 ```bash
