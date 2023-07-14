@@ -3,7 +3,7 @@
 # to execute this experiment run:
 # python train.py experiment=example
 
-dataset_name: dotlist_induced3
+dataset_name: example_dataset
 service_compound:
   - order
   - inventory
@@ -12,6 +12,7 @@ service_compound:
 
 defaults:
   - override /datamodule: message_event.yaml
+  - override /dataset: sequence.yaml
   - override /model: message_event_encoder.yaml
   - override /trainer: default.yaml
   - override /logger: many_loggers.yaml
@@ -20,8 +21,16 @@ trainer:
   max_epochs: 2
   log_every_n_steps: 5
 
-dataset:
-  padding: END
+model:
+  vector_size: 10
+  max_length: 7
+  hidden_size: 256
+  START:
+      data: [8]
+
+  END:
+      data: [9]
 
 datamodule:
   batch_size: 1
+
